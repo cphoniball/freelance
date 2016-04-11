@@ -6,7 +6,10 @@
 		<div class="client-wrap col-xs-12">
 			<header class="client-list-header">
 				<h1>Clients</h1>
+				<div id="create-client-button"></div>
 			</header>
+
+			<div id="create-client-form"></div>
 
 			<table class="client-list table table-striped">
 				<thead>
