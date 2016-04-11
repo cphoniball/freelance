@@ -18,8 +18,7 @@ class CreateClientsTable extends Migration
             $table->string('name');
             $table->string('contact_name');
             $table->longtext('description');
-            $table->string('address_one');
-            $table->string('address_two');
+            $table->mediumtext('address');
             $table->string('phone');
             $table->string('email');
 

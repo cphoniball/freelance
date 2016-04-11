@@ -23,4 +23,13 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Get the clients that this user has
+     *
+     * @return [type] [description]
+     */
+    public function clients() {
+        return $this->hasMany('App\Client');
+    }
 }
