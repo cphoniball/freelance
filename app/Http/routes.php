@@ -20,3 +20,13 @@ Route::auth();
 Route::get('/home', 'HomeController@index');
 
 Route::resource('client', 'ClientController');
+
+/**
+ * Api routes here
+ */
+Route::group(['prefix' => 'api/v1'], function() {
+
+	Route::resource('clients', 'ClientApiController');
+
+
+});
