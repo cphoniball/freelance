@@ -1,5 +1,9 @@
 ### Change Log
 
+### 4.11.16 - 1.2.0
+- React controller base class
+- React client controller class
+
 ### 4.9.16 - 1.1.0
 - Set up grunt browserify
 - React components for create client button, create client form

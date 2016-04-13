@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,oBAAoB;EACnB,QAAQ,EAAE,KAAK;EACf,GAAG,EAAE,CAAC;EACN,IAAI,EAAE,CAAC;EACP,MAAM,EAAE,IAAI;EACZ,KAAK,EAAE,IAAI;EACX,gBAAgB,EAAE,kBAA0B;EAC5C,OAAO,EAAE,IAAI;;AAEd,qBAAqB;EACpB,QAAQ,EAAE,QAAQ;EAClB,GAAG,EAAE,IAAI;EACT,KAAK,EAAE,IAAI;;ACZZ,mBAAmB;EAClB,gBAAgB,ECKV,OAAO;EDJb,OAAO,EAAE,IAAI;EACb,KAAK,EAAE,GAAG;EACV,SAAS,EAAE,KAAK;EAChB,QAAQ,EAAE,QAAQ;EAClB,GAAG,EAAE,GAAG;EACR,IAAI,EAAE,GAAG;EACT,SAAS,EAAE,iCAAiC;EAC5C,yBAAK;IACJ,KAAK,ECTC,IAAI",
+"sources": ["../../../resources/assets/sass/layout.sass","../../../resources/assets/sass/modules/clients.sass","../../../resources/assets/sass/colors.sass"],
+"names": [],
+"file": "main.css"
+}

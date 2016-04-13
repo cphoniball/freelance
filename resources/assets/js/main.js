@@ -1,8 +1,7 @@
 var React 		= require('react'),
-		ReactDOM 	= require('react-dom');
+		ReactDOM 	= require('react-dom'),
+		Controller = require('./classes/controller');
 
-var CreateClientButton 	= require('./components/client/create-client-button'),
-		CreateClientForm 	 	= require('./components/client/create-client-form');
+var CreateClientButton 	= require('./components/client/create-client-button');
 
 ReactDOM.render(<CreateClientButton />, document.getElementById('create-client-button'));
-ReactDOM.render(<CreateClientForm />, document.getElementById('create-client-form'));

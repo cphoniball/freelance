@@ -24,3 +24,11 @@ A dashboard to help automate common tasks for freelancing.
     + [] Task: Programmatically create/edit PDF invoice template
     + [] Task: Create application reminder/notification system 
     + [] Task: Email PDF invoices automatically 
+- [] User story: Useful freelance links/resources repository
+    + [] Task: 
+
+
+
+### Useful links: 
+
+- http://regexr.com/

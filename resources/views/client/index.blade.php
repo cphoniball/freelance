@@ -9,8 +9,6 @@
 				<div id="create-client-button"></div>
 			</header>
 
-			<div id="create-client-form"></div>
-
 			<table class="client-list table table-striped">
 				<thead>
 					<th>Name</th>
