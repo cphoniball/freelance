@@ -32,7 +32,6 @@ class Controller {
 	 * @return {[type]}             [description]
 	 */
 	on(eventName, callback)	{
-
 		return this.ee.on(eventName, callback);
 	}
 

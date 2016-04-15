@@ -1,5 +1,10 @@
 ### Change Log
 
+### 4.15.16 - 1.3.0
+- Create client form validation, success messages
+- Create client API endpoint
+- ApiController
+
 ### 4.13.16 - 1.2.0
 - Create client form state managed
 

@@ -1,18 +1,23 @@
-var React = require('react'),
+var React 						= require('react'),
+		reqwest 					= require('reqwest'),
 		FullScreenOverlay = require('../layout/full-screen-overlay'),
-		clientController = require('./client-controller');
+		clientController 	= require('./client-controller');
 
 module.exports = React.createClass({
 
+	defaultState: {
+		name: '',
+		description: '',
+		contactName: '',
+		address: '',
+		phone: '',
+		email: '',
+		validationErrors: {},
+		statusMessage: false
+	},
+
 	getInitialState: function() {
-		return {
-			name: '',
-			description: '',
-			contactName: '',
-			address: '',
-			phone: '',
-			email: ''
-		};
+		return this.defaultState;
 	},
 
 	handleCloseOverlayClick: function(event) {
@@ -48,15 +53,47 @@ module.exports = React.createClass({
 	},
 
 	handleFormSubmit: function(event) {
+		event.preventDefault();
 
+		reqwest({
+			url: '/api/v1/clients',
+			method: 'post',
+			type: 'json',
+			data: this.state,
+			error: function (response, error) {
+				var data = JSON.parse(response.response);
+
+				if (data.result_code === 403) { // Validation error
+					this.setState({ validationErrors: data.error.validation_error });
+
+					console.log(data.error.validation_error);
+				}
+			}.bind(this),
+			success: function(response) {
+				if (typeof response.created !== 'undefined') {
+					var newState = this.defaultState;
+					newState.statusMessage = 'Client created!';
+
+					this.setState(newState);
+				}
+			}.bind(this)
+		});
 	},
 
 	render: function() {
+		var statusMessage = this.state.statusMessage ? <div className="statusMessage alert alert-success">{this.state.statusMessage}</div> : <div></div>;
+
 		return(
 			<FullScreenOverlay active={this.props.active} handleCloseOverlayClick={this.handleCloseOverlayClick}>
-				<form className="create-client-form" action="/client/create" method="post" onSubmit={this.handleFormSubmit}>
+				<form className="create-client-form" action="/client" method="post" onSubmit={this.handleFormSubmit}>
 
-					<input type="hidden" name="user_id" value="" />
+					<div className="errors">
+						{Object.keys(this.state.validationErrors).map(function(key) {
+							return <div className="alert alert-danger">{this.state.validationErrors[key].pop()}</div>
+						}.bind(this))}
+					</div>
+
+					{statusMessage}
 
 					<div className="form-group">
 						<label for="name">Name</label>

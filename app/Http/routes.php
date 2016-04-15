@@ -26,7 +26,7 @@ Route::resource('client', 'ClientController');
  */
 Route::group(['prefix' => 'api/v1'], function() {
 
-	Route::resource('clients', 'ClientApiController');
-
+	Route::get('clients', 'Api\ClientApiController@get');
+	Route::post('clients', 'Api\ClientApiController@create');
 
 });
