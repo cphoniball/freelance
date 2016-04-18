@@ -1,5 +1,9 @@
 ### Change Log
 
+### 4.18.16 - 1.4.0
+- Add App\JWT
+- Register JWT service
+
 ### 4.15.16 - 1.3.0
 - Create client form validation, success messages
 - Create client API endpoint
