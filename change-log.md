@@ -1,5 +1,8 @@
 ### Change Log
 
+### 4.19.16 - 1.5.0
+- Test JWT class
+
 ### 4.18.16 - 1.4.0
 - Add App\JWT
 - Register JWT service

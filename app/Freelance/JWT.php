@@ -3,7 +3,7 @@
 namespace App\Freelance;
 
 use Lcobucci\JWT\Builder;
-use Lcobuccu\JWT\Parser;
+use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\ValidationData;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 
@@ -40,17 +40,18 @@ class JWT {
 	 */
 	public $validator;
 
-	public function __construct() {
+	public function __construct($base_url)
+	{
 		$this->builder = new Builder();
 		$this->signer = new Sha256();
 		$this->validator = new ValidationData();
 		$this->parser = new Parser();
 
-    $this->validator->setIssuer(url('/'));
-    $this->validator->setAudience(url('/');
+    $this->validator->setIssuer($base_url);
+    $this->validator->setAudience($base_url);
 
-		$this->builder->setIssuer(url('/'))
-    $this->builder->setAudience(url('/'))
+		$this->builder->setIssuer($base_url);
+    $this->builder->setAudience($base_url);
 	}
 
 	/**
@@ -58,7 +59,8 @@ class JWT {
 	 *
 	 * @param string $secret [description]
 	 */
-	public function setSecret(string $secret) {
+	public function setSecret($secret)
+	{
 		$this->secret = $secret;
 		return $this;
 	}
@@ -85,7 +87,7 @@ class JWT {
 	public function generateSecret()
 	{
 		$this->secret = str_random(64);
-		return $this->secret;
+		return $this;
 	}
 
 	/**
@@ -112,7 +114,7 @@ class JWT {
 	 * @param  string $tokenString [description]
 	 * @return [type]              [description]
 	 */
-	public function verifyToken(string $tokenString)
+	public function verifyToken($tokenString)
 	{
 		if (!isset($this->secret)) {
 			throw new Exception('No JWT secret set to validate with.');
@@ -121,10 +123,12 @@ class JWT {
 	  $token = $this->parser->parse((string) $tokenString);
 
     // Validate
-    $token->validate($this->validator);
+    $valid = $token->validate($this->validator);
 
     // Verify
-    $token->verify($this->signer, $this->secret);
+    $verified = $token->verify($this->signer, $this->secret);
+
+    return $valid && $verified;
 	}
 
 }

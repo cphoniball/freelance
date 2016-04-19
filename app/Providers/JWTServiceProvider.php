@@ -33,6 +33,8 @@ class JWTServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Freelance\JWT', 'App\Freelance\JWT');
+        $this->app->bind('App\Freelance\JWT', function($app) {
+            return new JWT(url('/'));
+        });
     }
 }
