@@ -24,9 +24,18 @@ Route::resource('client', 'ClientController');
 /**
  * Api routes here
  */
-Route::group(['prefix' => 'api/v1'], function() {
+Route::group(['prefix' => 'api/v1', 'namespace' => 'Api'], function() {
 
-	Route::get('clients', 'Api\ClientApiController@get');
-	Route::post('clients', 'Api\ClientApiController@create');
+	// Auth create/destroy
+	Route::post('tokens', 'AuthController@create');
+	Route::delete('tokens', 'AuthController@destroy');
+
+	// API routes requiring auth access
+	Route::group(['middleware' => 'auth.jwt'], function() {
+
+		Route::get('clients', 'ClientApiController@get');
+		Route::post('clients', 'ClientApiController@create');
+
+	});
 
 });

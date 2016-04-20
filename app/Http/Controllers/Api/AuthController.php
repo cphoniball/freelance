@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+
+use Hash;
 
 use Illuminate\Http\Request;
 
+use App\User;
 use App\Http\Requests;
 
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\ValidationData;
+use App\Freelance\JWT;
 
 class AuthController extends ApiController
 {
@@ -19,25 +20,46 @@ class AuthController extends ApiController
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-	function create(Request $request) {
+	function create(Request $request, JWT $jwt)
+	{
+		$email = $request->input('email');
+		$password = $request->input('password');
 
+		$user = User::where('email', $email)->first();
+
+		// Verify user exists
+		if (!$user) {
+			return $this->respondNotAuthorized([
+				'failed' => 'email'
+			]);
+		}
+
+		// Verify password
+		if (!Hash::check($password, $user->password)) {
+			return $this->respondNotAuthorized([
+				'failed' => 'password'
+			]);
+		}
+
+		// Create and return a JWT token to the requester
+		return $this->respondAuthorized([
+			'token' => (string) $jwt->setUser($user)->createToken()
+		]);
 	}
 
 	/**
-	 * Verify that this request is valid
+	 * Destroy a session.
+	 * Note that this uses JWT authentication, so you can't 'destroy' a session
+	 * We accomplish this by updating the signing secret for the given user, so that
+	 * previously issued tokens are no longer valid.
 	 *
 	 * @return [type] [description]
 	 */
-	function verify() {
+	function destroy(Request $request)
+	{
+		$userId = $request->input('user_id');
 
-	}
 
-	/**
-	 * Destroy a session
-	 *
-	 * @return [type] [description]
-	 */
-	function destroy() {
 
 	}
 

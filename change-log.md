@@ -1,6 +1,10 @@
 ### Change Log
 
 ### 4.19.16 - 1.5.0
+- JWT auth middleware
+- Extract JWT logic from User model 
+
+### 4.19.16 - 1.5.0
 - Test JWT class
 
 ### 4.18.16 - 1.4.0

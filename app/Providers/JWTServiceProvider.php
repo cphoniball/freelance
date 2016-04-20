@@ -18,11 +18,11 @@ class JWTServiceProvider extends ServiceProvider
     {
         // Ensure a JWT signing string is set on user creation
         User::creating(function($user) {
-            if (isset($user->jwt_sign)) {
+            if (isset($user->secret)) {
                 return;
             }
 
-            $user->setJWTSecret();
+            $user->secret = str_random(64);
         });
     }
 

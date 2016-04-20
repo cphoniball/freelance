@@ -2,6 +2,8 @@
 
 namespace App\Freelance;
 
+use App\User;
+
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\ValidationData;
@@ -11,13 +13,6 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
  * Manages JWT creation and validation logic
  */
 class JWT {
-
-	/**
-	 * Secret used to sign/verify JWTs
-	 *
-	 * @var [type]
-	 */
-	public $secret;
 
 	/**
 	 * Signer instance
@@ -40,6 +35,13 @@ class JWT {
 	 */
 	public $validator;
 
+	/**
+	 * User that this JWT is being generated/verified for
+	 *
+	 * @var [type]
+	 */
+	public $user;
+
 	public function __construct($base_url)
 	{
 		$this->builder = new Builder();
@@ -55,27 +57,24 @@ class JWT {
 	}
 
 	/**
-	 * Set secret string
+	 * Get the user for this JWT token
 	 *
-	 * @param string $secret [description]
+	 * @return [type] [description]
 	 */
-	public function setSecret($secret)
+	public function getUser()
 	{
-		$this->secret = $secret;
-		return $this;
+		return $this->user;
 	}
 
 	/**
-	 * Set secret string
+	 * Set this JWT user
 	 *
-	 * @param string $secret [description]
+	 * @param User $user [description]
 	 */
-	public function getSecret() {
-		if (!isset($this->secret)) {
-			return false;
-		}
-
-		return $this->secret;
+	public function setUser(User $user)
+	{
+		$this->user = $user;
+		return $this;
 	}
 
 	/**
@@ -86,7 +85,20 @@ class JWT {
 	 */
 	public function generateSecret()
 	{
-		$this->secret = str_random(64);
+		return str_random(64);
+	}
+
+	/**
+	 * Set user JWT secret, and save to database
+	 *
+	 * @return  $this
+	 */
+	public function setUserSecret() {
+		if (!isset($this->user)) { return $this; }
+
+		$this->user->secret = $this->generateSecret();
+		$this->user->save();
+
 		return $this;
 	}
 
@@ -97,14 +109,15 @@ class JWT {
 	 */
 	public function createToken()
 	{
-		if (!isset($this->secret)) {
-			throw new Exception('No JWT secret set to sign with.');
+		if (!isset($this->user->secret)) {
+			$this->setUserSecret();
 		}
 
 		return $this->builder
                 ->setIssuedAt(time())
                 ->setExpiration(time() + 3600)
-                ->sign($this->signer, $this->secret)
+                ->set('user', $this->user->id)
+                ->sign($this->signer, $this->user->secret)
                 ->getToken();
 	}
 
@@ -116,17 +129,21 @@ class JWT {
 	 */
 	public function verifyToken($tokenString)
 	{
-		if (!isset($this->secret)) {
-			throw new Exception('No JWT secret set to validate with.');
-		}
+		$token = $this->parser->parse((string) $tokenString);
 
-	  $token = $this->parser->parse((string) $tokenString);
+		$user_id = $token->getClaim('user');
+		$user = User::find($user_id);
+
+		// No valid user
+		if (!$user || !isset($user->secret)) { return false; }
+
+		$this->user = $user;
 
     // Validate
     $valid = $token->validate($this->validator);
 
     // Verify
-    $verified = $token->verify($this->signer, $this->secret);
+    $verified = $token->verify($this->signer, $this->user->secret);
 
     return $valid && $verified;
 	}

@@ -26,6 +26,7 @@ class ApiController extends Controller {
 	const CREATED = 101;
 	const UPDATED = 102;
 	const DELETED = 104;
+	const NO_AUTH = 300;
 	const ALREADY_EXISTS = 201;
 	const MISSING_PARAMS = 401;
 	const INVALID_PARAMS = 402;
@@ -133,6 +134,37 @@ class ApiController extends Controller {
 	protected function respondOk(array $data = ['message' => 'Created']) {
 		return $this
 						->setStatusCode(SymfonyResponse::HTTP_OK)
+						->respond($data);
+	}
+
+	/**
+	 * Respond with created message
+	 * @param  string $message
+	 * @return Response
+	 */
+	protected function respondAuthorized(array $data = []) {
+		$default = ['authorized' => true];
+
+		$data = array_merge($default, $data);
+
+		return $this
+						->setStatusCode(SymfonyResponse::HTTP_OK)
+						->respond($data);
+	}
+
+	/**
+	 * Respond with created message
+	 * @param  string $message
+	 * @return Response
+	 */
+	protected function respondNotAuthorized(array $data = []) {
+		$default = ['authorized' => false];
+
+		$data = array_merge($default, $data);
+
+		return $this
+						->setInternalCode(self::NO_AUTH)
+						->setStatusCode(SymfonyResponse::HTTP_UNAUTHORIZED)
 						->respond($data);
 	}
 
