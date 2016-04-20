@@ -22,7 +22,13 @@ module.exports = function(grunt) {
 		// Requires that JS be run through babel transform first.
 		browserify: {
 			options: {
-				transform: [['babelify', {'presets': 'react'}]],
+				transform: [
+					[
+						'babelify', {
+							'presets': ['react', 'es2015']
+						}
+					]
+				],
 				watch: true,
 				keepAlive: true,
 				watchifyOptions: {

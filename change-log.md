@@ -1,6 +1,9 @@
 ### Change Log
 
-### 4.19.16 - 1.5.0
+### 4.20.16 - 1.6.1
+- Very basic react router implementation 
+
+### 4.20.16 - 1.6.0
 - JWT auth middleware
 - Extract JWT logic from User model 
 
