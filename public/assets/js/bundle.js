@@ -42411,6 +42411,57 @@ var _reactRouter = require('react-router');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+module.exports = _react2.default.createClass({
+	displayName: 'exports',
+
+
+	links: [{ name: 'Dashboard', path: '/dashboard' }, { name: 'Clients', path: '/clients' }],
+
+	render: function render() {
+		return _react2.default.createElement(
+			'div',
+			{ className: 'freelance-sidebar sidebar' },
+			_react2.default.createElement(
+				'div',
+				{ className: 'freelance-sidebar-header' },
+				_react2.default.createElement(
+					'h1',
+					{ className: 'freelance-sidebar-logo' },
+					'Freelance'
+				)
+			),
+			_react2.default.createElement(
+				'div',
+				{ className: 'freelance-sidebar-links' },
+				this.links.map(function (link) {
+					return _react2.default.createElement(
+						_reactRouter.Link,
+						{ className: 'freelance-sidebar-link', activeClassName: 'active', to: link.path },
+						link.name
+					);
+				})
+			),
+			_react2.default.createElement('footer', { className: 'freelance-sidebar-footer' })
+		);
+	}
+
+});
+
+},{"react":227,"react-router":35}],241:[function(require,module,exports){
+'use strict';
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouter = require('react-router');
+
+var _sidebar = require('./components/layout/sidebar');
+
+var _sidebar2 = _interopRequireDefault(_sidebar);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * Parent component for Freelance front end
  *
@@ -42419,50 +42470,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 module.exports = _react2.default.createClass({
 	displayName: 'exports',
 
+
 	render: function render() {
 		return _react2.default.createElement(
 			'div',
-			{ className: 'freelance' },
-			_react2.default.createElement(
-				'header',
-				{ className: 'freelance-header' },
-				_react2.default.createElement(
-					'h1',
-					null,
-					_react2.default.createElement(
-						_reactRouter.Link,
-						{ to: '/' },
-						'Freelance'
-					)
-				),
-				_react2.default.createElement(
-					'nav',
-					null,
-					_react2.default.createElement(
-						'ul',
-						null,
-						_react2.default.createElement(
-							'li',
-							null,
-							_react2.default.createElement(
-								_reactRouter.Link,
-								{ to: '/clients' },
-								'Clients'
-							)
-						)
-					)
-				)
-			),
+			{ className: 'freelance-container' },
+			_react2.default.createElement(_sidebar2.default, null),
 			_react2.default.createElement(
 				'div',
-				{ className: 'freelance-body' },
+				{ className: 'freelance-view-container' },
 				this.props.children
 			)
 		);
 	}
 });
 
-},{"react":227,"react-router":35}],241:[function(require,module,exports){
+},{"./components/layout/sidebar":240,"react":227,"react-router":35}],242:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -42542,4 +42565,4 @@ function redirectIfAuthed(nextState, replace) {
 	)
 ), document.getElementById('freelance-app'));
 
-},{"./api/api":229,"./components/clients/clients":234,"./components/dashboard":237,"./components/home":238,"./freelance":240,"react":227,"react-dom":5,"react-router":35}]},{},[241]);
+},{"./api/api":229,"./components/clients/clients":234,"./components/dashboard":237,"./components/home":238,"./freelance":241,"react":227,"react-dom":5,"react-router":35}]},{},[242]);

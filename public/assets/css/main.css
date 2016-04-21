@@ -1,3 +1,49 @@
+html, body {
+  font-size: 10px;
+  font-family: "Source Sans Pro", sans-serif; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Raleway", sans-serif;
+  font-weight: 900; }
+
+h1 {
+  font-size: 6rem; }
+
+h2 {
+  font-size: 5rem; }
+
+h3 {
+  font-size: 4rem; }
+
+h4 {
+  font-size: 3rem; }
+
+h5 {
+  font-size: 2rem; }
+
+span, p, div, a, li {
+  font-size: 1.4rem; }
+
+a {
+  text-decoration: none; }
+  a:active, a:focus, a:visited, a:hover {
+    text-decoration: none; }
+
+*, *:before, *:after {
+  box-sizing: border-box; }
+
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table; }
+
+.cf:after {
+  clear: both; }
+
+.freelance-view-container {
+  margin-left: 250px;
+  padding: 40px; }
+
 .full-screen-overlay {
   position: fixed;
   top: 0;
@@ -20,8 +66,34 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%); }
+  -webkit-transform: translateX(-50%) translateY(-50%);
+          transform: translateX(-50%) translateY(-50%); }
   .create-client-form label {
     color: #fff; }
 
-/*# sourceMappingURL=main.css.map */
+.freelance-sidebar {
+  width: 250px;
+  background-color: #1A5491;
+  position: fixed;
+  height: 100%;
+  left: 0;
+  top: 0;
+  color: #fff; }
+
+.freelance-sidebar-logo {
+  font-size: 4rem;
+  padding: 30px; }
+
+.freelance-sidebar-link {
+  color: #fff;
+  padding: 20px 30px;
+  display: block;
+  width: 100%;
+  font-size: 1.7rem;
+  font-family: "Raleway", sans-serif;
+  transition: 0.3s all; }
+  .freelance-sidebar-link:visited, .freelance-sidebar-link:active, .freelance-sidebar-link:focus {
+    color: #fff; }
+  .freelance-sidebar-link:hover {
+    background-color: #1F3587;
+    color: #fff; }
