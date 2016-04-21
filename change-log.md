@@ -1,5 +1,9 @@
 ### Change Log
 
+### 4.21.16 - 1.7.0
+- Basic client side API implementation
+- Basic login form, token requests in place
+
 ### 4.20.16 - 1.6.1
 - Very basic react router implementation 
 
