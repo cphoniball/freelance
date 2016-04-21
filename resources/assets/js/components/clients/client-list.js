@@ -1,5 +1,6 @@
 var React 	= require('react'),
- 		reqwest = require('reqwest');
+ 		reqwest = require('reqwest'),
+ 		api = require('../../api/api');
 
 module.exports = React.createClass({
 
@@ -18,15 +19,9 @@ module.exports = React.createClass({
 	 * @return {[type]} [description]
 	 */
 	componentDidMount: function() {
-		reqwest({
-			url: '/api/v1/clients',
-			method: 'get',
-			success: function(response) {
-				if (typeof response.data === 'undefined') return;
-
-				this.setState({ clients: response.data });
-			}.bind(this)
-		});
+		api.get('clients').then(function(response) {
+			this.setState({ clients: response.data });
+		}.bind(this));
 	},
 
 	/**

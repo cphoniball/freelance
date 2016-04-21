@@ -41545,6 +41545,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Api = function Api() {
 
 	/**
+  * Key value for the API token in local storage
+  *
+  * @type {String}
+  */
+	this.apiTokenName = 'freelance-api-token';
+
+	/**
   * JWT authorization token for the API
   *
   * @type {Boolean}
@@ -41587,7 +41594,7 @@ var Api = function Api() {
 
 		// Add JWT authentication if available
 		if (this.token) {
-			baseArgs.headers['Authorization'] = 'Bearer ' + this.token;
+			this.defaults.headers['Authorization'] = 'Bearer ' + this.token;
 		}
 
 		// Stringify JSON if necessary
@@ -41647,6 +41654,30 @@ var Api = function Api() {
 	};
 
 	/**
+  * Set token from local storage, if avaiable
+  *
+  * @return this
+  */
+	this.setToken = function () {
+		if (!localStorage.getItem(this.apiTokenName)) {
+			return this;
+		}
+
+		this.token = localStorage.getItem(this.apiTokenName);
+
+		return this;
+	};
+
+	/**
+  * Whether or not the API is currently authenticated for this user
+  *
+  * @return {Boolean} [description]
+  */
+	this.isAuthed = function () {
+		return this.token !== false;
+	};
+
+	/**
   * Request a new token from the API
   *
   * @return {[type]} [description]
@@ -41659,8 +41690,27 @@ var Api = function Api() {
 			}
 		};
 
+		// TODO: Error handling here
 		return this.post('tokens', args).then(function (response) {
-			console.log(response);
+			// If response contains token, save to local storage
+			if (response.authorized === true) {
+				localStorage.setItem(this.apiTokenName, response.token);
+				this.token = response.token;
+			}
+		}.bind(this));
+	};
+
+	/**
+  * Verify that the current token is valid
+  *
+  * @return {[type]} [description]
+  */
+	this.verifyToken = function (callback) {
+		return this.get('tokens/verify').then(function (response) {
+			if (response.authorized === true) {
+				return callback(true);
+			}
+			return callback(false);
 		});
 	};
 
@@ -41669,7 +41719,22 @@ var Api = function Api() {
   *
   * @return {[type]} [description]
   */
-	this.destroyToken = function () {};
+	this.destroyToken = function () {
+		localStorage.removeItem(this.apiTokenName);
+		return this;
+	};
+
+	// Look for local token on creation
+	this.setToken();
+
+	// Verify token is valid on startup - destroy if not valid
+	if (this.token) {
+		this.verifyToken(function (response) {
+			if (!response.authorized === true) {
+				this.destroyToken();
+			}
+		}.bind(this));
+	}
 
 	return this;
 };
@@ -41747,6 +41812,8 @@ var _api = require('../../api/api');
 
 var _api2 = _interopRequireDefault(_api);
 
+var _reactRouter = require('react-router');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = _react2.default.createClass({
@@ -41756,7 +41823,8 @@ module.exports = _react2.default.createClass({
 	getInitialState: function getInitialState() {
 		return {
 			email: '',
-			password: ''
+			password: '',
+			errors: []
 		};
 	},
 
@@ -41781,13 +41849,28 @@ module.exports = _react2.default.createClass({
 	handleFormSubmit: function handleFormSubmit(event) {
 		event.preventDefault();
 
-		_api2.default.requestToken(this.state.email, this.state.password);
+		_api2.default.requestToken(this.state.email, this.state.password).then(function (response) {
+			// Log user in and redirect them to the dashboard
+			_reactRouter.browserHistory.push('/dashboard');
+		}.bind(this)).fail(function (err, msg) {
+			// Indicate failed email or password
+			return this.setState({
+				errors: ['Email or password incorrect.']
+			});
+		}.bind(this));
 	},
 
 	render: function render() {
 		return _react2.default.createElement(
 			'div',
 			{ className: 'login-form' },
+			this.state.errors.map(function (error) {
+				return _react2.default.createElement(
+					'div',
+					{ className: 'alert alert-danger' },
+					error
+				);
+			}),
 			_react2.default.createElement(
 				'form',
 				{ onSubmit: this.handleFormSubmit },
@@ -41804,7 +41887,7 @@ module.exports = _react2.default.createClass({
 				_react2.default.createElement(
 					'div',
 					{ className: 'form-group' },
-					_react2.default.createElement('input', { type: 'submit', 'class': 'btn btn-primary', value: 'Log In' })
+					_react2.default.createElement('input', { type: 'submit', className: 'btn btn-primary', value: 'Log In' })
 				)
 			)
 		);
@@ -41812,7 +41895,7 @@ module.exports = _react2.default.createClass({
 
 });
 
-},{"../../api/api":229,"react":227}],232:[function(require,module,exports){
+},{"../../api/api":229,"react":227,"react-router":35}],232:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -41841,7 +41924,8 @@ module.exports = new ClientController();
 'use strict';
 
 var React = require('react'),
-    reqwest = require('reqwest');
+    reqwest = require('reqwest'),
+    api = require('../../api/api');
 
 module.exports = React.createClass({
 	displayName: 'exports',
@@ -41862,15 +41946,9 @@ module.exports = React.createClass({
   * @return {[type]} [description]
   */
 	componentDidMount: function componentDidMount() {
-		reqwest({
-			url: '/api/v1/clients',
-			method: 'get',
-			success: function (response) {
-				if (typeof response.data === 'undefined') return;
-
-				this.setState({ clients: response.data });
-			}.bind(this)
-		});
+		api.get('clients').then(function (response) {
+			this.setState({ clients: response.data });
+		}.bind(this));
 	},
 
 	/**
@@ -41964,7 +42042,7 @@ module.exports = React.createClass({
 
 });
 
-},{"react":227,"reqwest":228}],234:[function(require,module,exports){
+},{"../../api/api":229,"react":227,"reqwest":228}],234:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -42241,7 +42319,30 @@ module.exports = React.createClass({
 
 });
 
-},{"../layout/full-screen-overlay":238,"./client-controller":232,"react":227,"reqwest":228}],237:[function(require,module,exports){
+},{"../layout/full-screen-overlay":239,"./client-controller":232,"react":227,"reqwest":228}],237:[function(require,module,exports){
+"use strict";
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = _react2.default.createClass({
+	displayName: "exports",
+
+
+	render: function render() {
+		return _react2.default.createElement(
+			"div",
+			{ className: "dashboard" },
+			"This is the dashboard"
+		);
+	}
+
+});
+
+},{"react":227}],238:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -42273,7 +42374,7 @@ module.exports = _react2.default.createClass({
 
 });
 
-},{"./auth/login-form":231,"react":227}],238:[function(require,module,exports){
+},{"./auth/login-form":231,"react":227}],239:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -42299,7 +42400,7 @@ module.exports = React.createClass({
 
 });
 
-},{"react":227}],239:[function(require,module,exports){
+},{"react":227}],240:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -42361,7 +42462,7 @@ module.exports = _react2.default.createClass({
 	}
 });
 
-},{"react":227,"react-router":35}],240:[function(require,module,exports){
+},{"react":227,"react-router":35}],241:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -42380,14 +42481,54 @@ var _home = require('./components/home');
 
 var _home2 = _interopRequireDefault(_home);
 
+var _dashboard = require('./components/dashboard');
+
+var _dashboard2 = _interopRequireDefault(_dashboard);
+
 var _clients = require('./components/clients/clients');
 
 var _clients2 = _interopRequireDefault(_clients);
 
+var _api = require('./api/api');
+
+var _api2 = _interopRequireDefault(_api);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Require authentication for routes
+ *
+ * @param  {[type]} nextState [description]
+ * @param  {[type]} replace   [description]
+ * @return {[type]}           [description]
+ */
 // React components, react router, etc.
+function requireAuth(nextState, replace) {
+	if (!_api2.default.isAuthed()) {
+		replace({
+			pathname: '/',
+			state: { nextPathName: nextState.location.pathname }
+		});
+	}
+}
 
+/**
+ * Redirect to dashboards if the user tries to access home page while logged in
+ *
+ * @param  {[type]} nextState [description]
+ * @param  {[type]} replace   [description]
+ * @return {[type]}           [description]
+ */
+
+
+// App components
+function redirectIfAuthed(nextState, replace) {
+	if (_api2.default.isAuthed()) {
+		replace({
+			pathname: '/dashboard'
+		});
+	}
+}
 
 (0, _reactDom.render)(_react2.default.createElement(
 	_reactRouter.Router,
@@ -42395,11 +42536,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 	_react2.default.createElement(
 		_reactRouter.Route,
 		{ path: '/', component: _freelance2.default },
-		_react2.default.createElement(_reactRouter.IndexRoute, { component: _home2.default }),
-		_react2.default.createElement(_reactRouter.Route, { path: 'clients', component: _clients2.default })
+		_react2.default.createElement(_reactRouter.IndexRoute, { component: _home2.default, onEnter: redirectIfAuthed }),
+		_react2.default.createElement(_reactRouter.Route, { path: 'dashboard', component: _dashboard2.default, onEnter: requireAuth }),
+		_react2.default.createElement(_reactRouter.Route, { path: 'clients', component: _clients2.default, onEnter: requireAuth })
 	)
 ), document.getElementById('freelance-app'));
 
-// App components
-
-},{"./components/clients/clients":234,"./components/home":237,"./freelance":239,"react":227,"react-dom":5,"react-router":35}]},{},[240]);
+},{"./api/api":229,"./components/clients/clients":234,"./components/dashboard":237,"./components/home":238,"./freelance":240,"react":227,"react-dom":5,"react-router":35}]},{},[241]);

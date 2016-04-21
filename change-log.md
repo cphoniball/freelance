@@ -1,5 +1,9 @@
 ### Change Log
 
+### 4.21.16 - 1.7.1
+- Login form redirects to dashboard if user is logged in 
+- Client list uses client api 
+
 ### 4.21.16 - 1.7.0
 - Basic client side API implementation
 - Basic login form, token requests in place

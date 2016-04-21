@@ -48,6 +48,22 @@ class AuthController extends ApiController
 	}
 
 	/**
+	 * Endpoint for external APIs to ensure the validity of their token
+	 *
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	function verify(Request $request, JWT $jwt) {
+		$token = $request->bearerToken();
+
+	  if (!$token || !$jwt->verifyToken($token)) {
+	      return $this->respondNotAuthorized();
+	  }
+
+	  return $this->respondAuthorized();
+	}
+
+	/**
 	 * Destroy a session.
 	 * Note that this uses JWT authentication, so you can't 'destroy' a session
 	 * We accomplish this by updating the signing secret for the given user, so that

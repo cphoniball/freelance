@@ -4,6 +4,13 @@ import _ from 'lodash';
 var Api = function() {
 
 	/**
+	 * Key value for the API token in local storage
+	 *
+	 * @type {String}
+	 */
+	this.apiTokenName = 'freelance-api-token';
+
+	/**
 	 * JWT authorization token for the API
 	 *
 	 * @type {Boolean}
@@ -46,7 +53,7 @@ var Api = function() {
 
 		// Add JWT authentication if available
 		if (this.token) {
-			baseArgs.headers['Authorization'] = 'Bearer ' + this.token;
+			this.defaults.headers['Authorization'] = 'Bearer ' + this.token;
 		}
 
 		// Stringify JSON if necessary
@@ -106,6 +113,28 @@ var Api = function() {
 	};
 
 	/**
+	 * Set token from local storage, if avaiable
+	 *
+	 * @return this
+	 */
+	this.setToken = function() {
+		if (!localStorage.getItem(this.apiTokenName)) { return this; }
+
+		this.token = localStorage.getItem(this.apiTokenName);
+
+		return this;
+	};
+
+	/**
+	 * Whether or not the API is currently authenticated for this user
+	 *
+	 * @return {Boolean} [description]
+	 */
+	this.isAuthed = function() {
+		return this.token !== false;
+	};
+
+	/**
 	 * Request a new token from the API
 	 *
 	 * @return {[type]} [description]
@@ -118,10 +147,27 @@ var Api = function() {
 			}
 		};
 
+		// TODO: Error handling here
 		return this.post('tokens', args)
 			.then(function(response) {
-				console.log(response);
-			});
+				// If response contains token, save to local storage
+				if (response.authorized === true) {
+					localStorage.setItem(this.apiTokenName, response.token);
+					this.token = response.token;
+				}
+			}.bind(this));
+	};
+
+	/**
+	 * Verify that the current token is valid
+	 *
+	 * @return {[type]} [description]
+	 */
+	this.verifyToken = function(callback) {
+		return this.get('tokens/verify').then(function(response) {
+			if (response.authorized === true) { return callback(true); }
+			return callback(false);
+		});
 	};
 
 	/**
@@ -130,8 +176,21 @@ var Api = function() {
 	 * @return {[type]} [description]
 	 */
 	this.destroyToken = function() {
-
+		localStorage.removeItem(this.apiTokenName);
+		return this;
 	};
+
+	// Look for local token on creation
+	this.setToken();
+
+	// Verify token is valid on startup - destroy if not valid
+	if (this.token) {
+		this.verifyToken(function(response) {
+			if (!response.authorized === true) {
+				this.destroyToken();
+			}
+		}.bind(this));
+	}
 
 	return this;
 

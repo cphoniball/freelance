@@ -18,6 +18,8 @@ Route::get('/', function () {
 Route::auth();
 
 Route::get('/home', 'HomeController@index');
+Route::get('/dashboard', 'HomeController@index');
+Route::get('/clients', 'HomeController@index');
 
 Route::resource('client', 'ClientController');
 
@@ -26,9 +28,10 @@ Route::resource('client', 'ClientController');
  */
 Route::group(['prefix' => 'api/v1', 'namespace' => 'Api'], function() {
 
-	// Auth create/destroy
+	// Auth
 	Route::post('tokens', 'AuthController@create');
 	Route::delete('tokens', 'AuthController@destroy');
+	Route::get('tokens/verify', 'AuthController@verify');
 
 	// API routes requiring auth access
 	Route::group(['middleware' => 'auth.jwt'], function() {
