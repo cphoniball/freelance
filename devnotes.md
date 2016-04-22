@@ -9,8 +9,8 @@ A dashboard to help automate common tasks for freelancing.
 - [] User story: Store client and project details
     + [x] Task: Create client database model
     + [x] Task: Create client laravel model 
-    + [] Task: Create project database model
-    + [] Task: View to browse existing clients
+    + [x] Task: Create project database model
+    + [x] Task: View to browse existing clients
     + [] Task: View to update/delete existing clients
     + [] Task: View to create new clients
 - [] User story: Track time spent on projects and business administration/marketing

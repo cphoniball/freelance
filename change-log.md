@@ -1,5 +1,9 @@
 ### Change Log
 
+
+### 4.22.16 - 1.8.0
+- First pass on base CRUD controller class
+
 ### 4.21.16 - 1.7.3
 - Add projects migration, api controller, laravel model 
 

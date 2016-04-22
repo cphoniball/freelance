@@ -9,30 +9,14 @@ use App\Http\Requests;
 
 use App\Client;
 
-class ClientApiController extends ApiController {
+class ClientController extends CrudController {
 
 	/**
-	 * Get a listing of this resource
+	 * Model that this controller is responsible for
 	 *
-	 * @return [type] [description]
+	 * @var string
 	 */
-	public function get(Request $request)
-	{
-		$clients = Client::all();
-
-		return $this->respondOk(['data' => $clients]);
-	}
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function getById($id)
-	{
-		//
-	}
+	protected $model = 'App\Client';
 
 	/**
 	 * Create a new client
@@ -60,17 +44,5 @@ class ClientApiController extends ApiController {
 			'created' => $client->toArray()
 		]);
 	}
-
-	public function update()
-	{
-
-	}
-
-	public function delete()
-	{
-
-	}
-
-
 
 }

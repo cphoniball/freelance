@@ -36,8 +36,9 @@ Route::group(['prefix' => 'api/v1', 'namespace' => 'Api'], function() {
 	// API routes requiring auth access
 	Route::group(['middleware' => 'auth.jwt'], function() {
 
-		Route::get('clients', 'ClientApiController@get');
-		Route::post('clients', 'ClientApiController@create');
+		Route::get('clients', 'ClientController@get');
+		Route::get('clients/{id}', 'ClientController@getById');
+		Route::post('clients', 'ClientController@create');
 
 		Route::get('projects', 'ProjectApiController@get');
 		Route::post('projects', 'ProjectApiController@create');

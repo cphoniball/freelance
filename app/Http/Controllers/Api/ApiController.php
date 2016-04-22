@@ -197,7 +197,11 @@ class ApiController extends Controller {
 	 * @param  string $message
 	 * @return Response
 	 */
-	protected function respondDeleted(array $data = ['message' => 'Delete successful.']) {
+	protected function respondDeleted(array $data = []) {
+		$defaults = ['message' => 'Delete successful.'];
+
+		$data = array_merge($defaults, $data);
+
 		return $this
 						->setInternalCode(self::DELETED)
 						->respond($data);

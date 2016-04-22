@@ -11,7 +11,7 @@ use App\Project;
 use App\Client;
 use App\User;
 
-class ProjectsApiController extends Controller
+class ProjectController extends Controller
 {
 
 	/**
