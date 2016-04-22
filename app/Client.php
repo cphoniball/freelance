@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Represents a freelancer's client
+ */
 class Client extends Model
 {
 
@@ -35,6 +38,15 @@ class Client extends Model
    */
   public function user() {
   	return $this->belongsTo('App\User');
+  }
+
+  /**
+   * Get the projects that belong to this client
+   *
+   * @return [type] [description]
+   */
+  public function projects() {
+      return $this->hasMany('App\Project');
   }
 
 }

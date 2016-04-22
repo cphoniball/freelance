@@ -39,6 +39,9 @@ Route::group(['prefix' => 'api/v1', 'namespace' => 'Api'], function() {
 		Route::get('clients', 'ClientApiController@get');
 		Route::post('clients', 'ClientApiController@create');
 
+		Route::get('projects', 'ProjectApiController@get');
+		Route::post('projects', 'ProjectApiController@create');
+
 	});
 
 });

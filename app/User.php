@@ -35,4 +35,13 @@ class User extends Authenticatable
         return $this->hasMany('App\Client');
     }
 
+    /**
+     * Get the projects that belong to this user
+     *
+     * @return [type] [description]
+     */
+    public function projects() {
+        return $this->hasMany('App\Project');
+    }
+
 }
