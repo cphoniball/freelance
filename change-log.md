@@ -1,5 +1,8 @@
 ### Change Log
 
+### 4.25.16 - 1.9.2
+- Add test permanent/static JWT tokens to App\Freelance\JWT
+
 ### 4.25.16 - 1.9.1
 - Add App\Freelance\CrudRoute helper class
 

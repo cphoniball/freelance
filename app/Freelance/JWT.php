@@ -2,6 +2,8 @@
 
 namespace App\Freelance;
 
+use App;
+
 use App\User;
 
 use Lcobucci\JWT\Builder;
@@ -78,6 +80,24 @@ class JWT {
 	}
 
 	/**
+	 * Get user secret, or static secret if this is a testing environment
+	 *
+	 * @return [type] [description]
+	 */
+	public function getSecret() {
+    // Use static secret if we are testing
+    if (App::environment('testing', 'development')) {
+    	return env('JWT_TEST_SECRET');
+    }
+
+    if (!$this->user || !isset($this->user->secret)) {
+    	throw Exception('No user or user secret set for JWT authentication.');
+    }
+
+		return $this->user->secret;
+	}
+
+	/**
 	 * Generate a random string to sign a JWT with.
 	 * This string should be stored somewhere, as it will be needed to verify the JWT that this string verifies.
 	 *
@@ -113,12 +133,16 @@ class JWT {
 			$this->setUserSecret();
 		}
 
-		return $this->builder
-                ->setIssuedAt(time())
-                ->setExpiration(time() + 3600)
-                ->set('user', $this->user->id)
-                ->sign($this->signer, $this->user->secret)
-                ->getToken();
+		$token = $this->builder
+	                ->setIssuedAt(time())
+	                ->set('user', $this->user->id);
+
+	  // Set expiration if this is not a test environment
+		if (!App::environment('testing', 'development')) {
+			$token->setExpiration(time() + 3600);
+		}
+
+		return $token->sign($this->signer, $this->getSecret())->getToken();
 	}
 
 	/**
@@ -139,11 +163,9 @@ class JWT {
 
 		$this->user = $user;
 
-    // Validate
+    // Validate and verify
     $valid = $token->validate($this->validator);
-
-    // Verify
-    $verified = $token->verify($this->signer, $this->user->secret);
+    $verified = $token->verify($this->signer, $this->getSecret());
 
     return $valid && $verified;
 	}
