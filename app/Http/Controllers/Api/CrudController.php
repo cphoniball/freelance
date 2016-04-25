@@ -40,6 +40,15 @@ class CrudController extends ApiController
 	protected $notAllowed = [];
 
 	/**
+	 * Array of functions to call before/after methods
+	 *
+	 * @var [type]
+	 */
+	protected $callbacks = [
+		'beforeCreate' => []
+	];
+
+	/**
 	 * Used to call a static method on this controller's model, because for some reason
 	 * you cannot do $this->model::methodName();
 	 *
@@ -101,6 +110,11 @@ class CrudController extends ApiController
 		}
 
 		$instance = new $this->model($request->all());
+
+		if (count($this->callbacks['beforeCreate'])) : foreach ($this->callbacks['beforeCreate'] as $callback) :
+			$instance = call_user_func($callback, $instance);
+		endforeach; endif;
+
 		$instance->save();
 
 		return $this->respondCreated([

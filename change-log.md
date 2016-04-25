@@ -1,6 +1,8 @@
 ### Change Log
 
-
+### 4.25.16 - 1.9.5
+- Add beforeCreated callback system to CrudController
+- Set client user id based on currently authed user
 
 ### 4.25.16 - 1.9.4
 - Users CrudController

@@ -3,6 +3,8 @@ var React 						= require('react'),
 		FullScreenOverlay = require('../layout/full-screen-overlay'),
 		clientController 	= require('./client-controller');
 
+import api from '../../api/api';
+
 module.exports = React.createClass({
 
 	defaultState: {
@@ -55,10 +57,7 @@ module.exports = React.createClass({
 	handleFormSubmit: function(event) {
 		event.preventDefault();
 
-		reqwest({
-			url: '/api/v1/clients',
-			method: 'post',
-			type: 'json',
+		api.post('clients', {
 			data: this.state,
 			error: function (response, error) {
 				var data = JSON.parse(response.response);

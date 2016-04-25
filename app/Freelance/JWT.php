@@ -65,6 +65,10 @@ class JWT {
 	 */
 	public function getUser()
 	{
+		if (!$this->user || !isset($this->user)) {
+			return false;
+		}
+
 		return $this->user;
 	}
 
@@ -90,8 +94,12 @@ class JWT {
     	return env('JWT_TEST_SECRET');
     }
 
-    if (!$this->user || !isset($this->user->secret)) {
-    	throw Exception('No user or user secret set for JWT authentication.');
+    if (!$this->user) {
+    	throw new Exception('No user set for JWT authentication.');
+    }
+
+    if (!isset($this->user->secret)) {
+    	$this->setUserSecret();
     }
 
 		return $this->user->secret;

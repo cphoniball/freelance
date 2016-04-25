@@ -41592,17 +41592,18 @@ var Api = function Api() {
 
 		var baseArgs = { method: method, url: this.prefix + url };
 
-		// Add JWT authentication if available
-		if (this.token) {
-			this.defaults.headers['Authorization'] = 'Bearer ' + this.token;
-		}
-
 		// Stringify JSON if necessary
 		if (_lodash2.default.isPlainObject(args.data)) {
 			args.data = JSON.stringify(args.data);
 		}
 
-		return Object.assign({}, this.defaults, baseArgs, args);
+		var combinedArgs = Object.assign({}, this.defaults, baseArgs, args);
+
+		if (this.token) {
+			combinedArgs.headers['Authorization'] = 'Bearer ' + this.token;
+		}
+
+		return combinedArgs;
 	};
 
 	/**
@@ -41706,7 +41707,7 @@ var Api = function Api() {
   * @return {[type]} [description]
   */
 	this.verifyToken = function (callback) {
-		return this.get('tokens/verify').then(function (response) {
+		return this.get('tokens/verify').always(function (response) {
 			if (response.authorized === true) {
 				return callback(true);
 			}
@@ -41721,6 +41722,7 @@ var Api = function Api() {
   */
 	this.destroyToken = function () {
 		localStorage.removeItem(this.apiTokenName);
+		this.token = false;
 		return this;
 	};
 
@@ -41730,11 +41732,11 @@ var Api = function Api() {
 	// Verify token is valid on startup - destroy if not valid
 	if (this.token) {
 		this.verifyToken(function (response) {
-			if (!response.authorized === true) {
-				this.destroyToken();
-			}
+			if (response.authorized === false) this.destroyToken();
 		}.bind(this));
 	}
+
+	console.log(this.token);
 
 	return this;
 };
@@ -42134,6 +42136,12 @@ module.exports = React.createClass({
 },{"./client-controller":232,"./create-client-form":236,"react":227}],236:[function(require,module,exports){
 'use strict';
 
+var _api = require('../../api/api');
+
+var _api2 = _interopRequireDefault(_api);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var React = require('react'),
     reqwest = require('reqwest'),
     FullScreenOverlay = require('../layout/full-screen-overlay'),
@@ -42193,10 +42201,7 @@ module.exports = React.createClass({
 	handleFormSubmit: function handleFormSubmit(event) {
 		event.preventDefault();
 
-		reqwest({
-			url: '/api/v1/clients',
-			method: 'post',
-			type: 'json',
+		_api2.default.post('clients', {
 			data: this.state,
 			error: function (response, error) {
 				var data = JSON.parse(response.response);
@@ -42319,7 +42324,7 @@ module.exports = React.createClass({
 
 });
 
-},{"../layout/full-screen-overlay":239,"./client-controller":232,"react":227,"reqwest":228}],237:[function(require,module,exports){
+},{"../../api/api":229,"../layout/full-screen-overlay":239,"./client-controller":232,"react":227,"reqwest":228}],237:[function(require,module,exports){
 "use strict";
 
 var _react = require("react");

@@ -51,17 +51,18 @@ var Api = function() {
 
 		const baseArgs = { method: method, url: this.prefix + url };
 
-		// Add JWT authentication if available
-		if (this.token) {
-			this.defaults.headers['Authorization'] = 'Bearer ' + this.token;
-		}
-
 		// Stringify JSON if necessary
 		if (_.isPlainObject(args.data)) {
 			args.data = JSON.stringify(args.data);
 		}
 
-		return Object.assign({}, this.defaults, baseArgs, args);
+		var combinedArgs = Object.assign({}, this.defaults, baseArgs, args);
+
+		if (this.token) {
+			combinedArgs.headers['Authorization'] = 'Bearer ' + this.token;
+		}
+
+		return combinedArgs;
 	};
 
 	/**
@@ -164,7 +165,7 @@ var Api = function() {
 	 * @return {[type]} [description]
 	 */
 	this.verifyToken = function(callback) {
-		return this.get('tokens/verify').then(function(response) {
+		return this.get('tokens/verify').always(function(response) {
 			if (response.authorized === true) { return callback(true); }
 			return callback(false);
 		});
@@ -177,6 +178,7 @@ var Api = function() {
 	 */
 	this.destroyToken = function() {
 		localStorage.removeItem(this.apiTokenName);
+		this.token = false;
 		return this;
 	};
 
@@ -186,11 +188,11 @@ var Api = function() {
 	// Verify token is valid on startup - destroy if not valid
 	if (this.token) {
 		this.verifyToken(function(response) {
-			if (!response.authorized === true) {
-				this.destroyToken();
-			}
+			if (response.authorized === false) this.destroyToken();
 		}.bind(this));
 	}
+
+	console.log(this.token);
 
 	return this;
 

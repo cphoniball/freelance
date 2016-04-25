@@ -75,7 +75,7 @@ class AuthController extends ApiController
 	{
 		$userId = $request->input('user_id');
 
-
+		// TODO: Finish this method out
 
 	}
 
