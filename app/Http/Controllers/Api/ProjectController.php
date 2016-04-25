@@ -1,49 +1,30 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Validator;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-use App\Project;
-use App\Client;
-use App\User;
-
-class ProjectController extends Controller
+class ProjectController extends CrudController
 {
 
 	/**
-	 * Get projects
+	 * The model that this controller is responsible for
 	 *
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
+	 * @var string
 	 */
-	public function get(Request $request) {
-
-	}
+	protected $model = 'App\Project';
 
 	/**
-	 * Get a single project by ID
+	 * Validation rules for creating and updating a project
 	 *
-	 * @param  Request $request [description]
-	 * @param  [type]  $id      [description]
-	 * @return [type]           [description]
+	 * @var [type]
 	 */
-	public function getById(Request $request, $id) {
-
-	}
-
-	/**
-	 * Create a new project
-	 *
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 */
-	public function create(Request $request) {
-
-	}
-
+	protected $validationRules = [
+		'name' => 'required|max:255',
+		'user_id' => 'required|exists:users,id',
+		'client_id' => 'required|exists:clients,id'
+	];
 
 }

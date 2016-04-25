@@ -39,9 +39,7 @@ Route::group(['prefix' => 'api/v1', 'namespace' => 'Api'], function() {
 	Route::group(['middleware' => 'auth.jwt'], function() {
 
 		CrudRoute::register('clients', 'ClientController');
-
-		Route::get('projects', 'ProjectApiController@get');
-		Route::post('projects', 'ProjectApiController@create');
+		CrudRoute::register('projects', 'ProjectController');
 
 	});
 

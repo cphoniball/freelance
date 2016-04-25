@@ -1,5 +1,9 @@
 ### Change Log
 
+
+### 4.25.16 - 1.9.3
+- Projects CrudController
+
 ### 4.25.16 - 1.9.2
 - Add test permanent/static JWT tokens to App\Freelance\JWT
 
