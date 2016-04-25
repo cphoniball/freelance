@@ -25,7 +25,8 @@ class CrudController extends ApiController
 	protected $model;
 
 	/**
-	 * Rules to validate when creating or updating a resource
+	 * Rules to validate when creating a resource
+   * 'required' rules will be removed when a resource is being updated
    *
 	 * @var array
 	 */
@@ -62,7 +63,6 @@ class CrudController extends ApiController
 	*/
 	public function get(Request $request)
 	{
-		// For real PHP
 		$results = $this->callModelMethod('all');
 
 		return $this->respondOk(['data' => $results]);
@@ -94,7 +94,7 @@ class CrudController extends ApiController
 	*/
 	public function create(Request $request)
 	{
-		$validator = Validator::make($request->all, $this->validationRules);
+		$validator = Validator::make($request->all(), $this->validationRules);
 
 		if ($validator->fails()) {
 			return $this->respondValidationFailed($validator->getMessageBag()->toArray());
@@ -117,7 +117,21 @@ class CrudController extends ApiController
 	*/
 	public function update(Request $request, $id)
 	{
+		// Remove required rules from validation rules
+		$updateRules = array_map(function($rules) {
+			$rulesArray = explode('|', $rules);
+			$rulesArray = array_filter($rulesArray, function($rule) { return $rule !== 'required'; });
+			return implode('|', $rulesArray);
+		}, $this->validationRules);
+
+		$validator = Validator::make($request->all(), $updateRules);
+
+		if ($validator->fails()) {
+			return $this->respondValidationFailed($validator->getMessageBag()->toArray());
+		}
+
 		$instance = $this->callModelMethod('find', $id);
+
 		$instance->update($request->all());
 
 		return $this->respondUpdated();
@@ -132,6 +146,11 @@ class CrudController extends ApiController
 	public function delete(Request $request, $id)
 	{
 		$instance = $this->callModelMethod('find', $id);
+
+		if (!$instance) {
+			return $this->respondNotFound($this->model . ' not found.');
+		}
+
 		$instance->delete();
 
 		return $this->respondDeleted(['deleted' => $instance->toArray()]);

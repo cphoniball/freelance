@@ -39,6 +39,9 @@ Route::group(['prefix' => 'api/v1', 'namespace' => 'Api'], function() {
 		Route::get('clients', 'ClientController@get');
 		Route::get('clients/{id}', 'ClientController@getById');
 		Route::post('clients', 'ClientController@create');
+		Route::patch('clients/{id}', 'ClientController@update');
+		Route::delete('clients/{id}', 'ClientController@delete');
+
 
 		Route::get('projects', 'ProjectApiController@get');
 		Route::post('projects', 'ProjectApiController@create');

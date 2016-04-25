@@ -1,6 +1,10 @@
 ### Change Log
 
 
+### 4.25.16 - 1.9.0
+- CrudController update
+- CrudController delete
+
 ### 4.22.16 - 1.8.0
 - First pass on base CRUD controller class
 

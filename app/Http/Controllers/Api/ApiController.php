@@ -185,7 +185,11 @@ class ApiController extends Controller {
 	 * @param  array $data
 	 * @return Response
 	 */
-	protected function respondUpdated(array $data = ['message' => 'Updated']) {
+	protected function respondUpdated(array $data = []) {
+		$defaults = ['message' => 'Updated'];
+
+		$data = array_merge($defaults, $data);
+
 		return $this
 						->setStatusCode(SymfonyResponse::HTTP_OK)
 						->setInternalCode(self::UPDATED)

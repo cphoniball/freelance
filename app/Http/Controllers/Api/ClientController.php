@@ -19,6 +19,18 @@ class ClientController extends CrudController {
 	protected $model = 'App\Client';
 
 	/**
+	 * Validation rules to use when creating or updating a client
+	 *
+	 * @var [type]
+	 */
+	protected $validationRules = [
+		'name' => 'required|max:255',
+		'contact_name' => 'max:255',
+		'email' => 'email',
+		'user_id' => 'exists:users,id'
+	];
+
+	/**
 	 * Create a new client
 	 *
 	 * @param  Request $request [description]
@@ -27,9 +39,7 @@ class ClientController extends CrudController {
 	public function create(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => 'required|max:255',
-			'contact_name' => 'max:255',
-			'email' => 'email'
+
 		]);
 
 		if ($validator->fails()) {
