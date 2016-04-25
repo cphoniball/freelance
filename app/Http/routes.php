@@ -38,6 +38,7 @@ Route::group(['prefix' => 'api/v1', 'namespace' => 'Api'], function() {
 	// API routes requiring auth access
 	Route::group(['middleware' => 'auth.jwt'], function() {
 
+		CrudRoute::register('users', 'UserController');
 		CrudRoute::register('clients', 'ClientController');
 		CrudRoute::register('projects', 'ProjectController');
 

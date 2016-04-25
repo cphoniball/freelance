@@ -1,6 +1,11 @@
 ### Change Log
 
 
+
+### 4.25.16 - 1.9.4
+- Users CrudController
+- Add 'local' to the JWT static token 
+
 ### 4.25.16 - 1.9.3
 - Projects CrudController
 

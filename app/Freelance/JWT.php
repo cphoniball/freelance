@@ -86,7 +86,7 @@ class JWT {
 	 */
 	public function getSecret() {
     // Use static secret if we are testing
-    if (App::environment('testing', 'development')) {
+    if (App::environment('local', 'testing', 'development')) {
     	return env('JWT_TEST_SECRET');
     }
 
@@ -138,7 +138,7 @@ class JWT {
 	                ->set('user', $this->user->id);
 
 	  // Set expiration if this is not a test environment
-		if (!App::environment('testing', 'development')) {
+		if (!App::environment('local', 'testing', 'development')) {
 			$token->setExpiration(time() + 3600);
 		}
 

@@ -25,13 +25,6 @@ class Client extends Model
   protected $fillable = ['name', 'user_id', 'contact_name', 'description', 'address', 'phone', 'email'];
 
   /**
-   * Don't use timestamps for this model
-   *
-   * @var boolean
-   */
-  public $timestamps = false;
-
-  /**
    * Get the user this client belongs to
    *
    * @return App\User

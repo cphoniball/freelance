@@ -25,13 +25,6 @@ class Project extends Model
   protected $fillable = ['name', 'user_id', 'client_id', 'name', 'notes'];
 
   /**
-   * Don't use timestamps for this model
-   *
-   * @var boolean
-   */
-  public $timestamps = false;
-
-  /**
    * Get the user that this project belongs to
    *
    * @return [type] [description]
