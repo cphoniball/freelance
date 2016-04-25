@@ -1,5 +1,7 @@
 <?php
 
+use App\Freelance\CrudRoute;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -36,12 +38,7 @@ Route::group(['prefix' => 'api/v1', 'namespace' => 'Api'], function() {
 	// API routes requiring auth access
 	Route::group(['middleware' => 'auth.jwt'], function() {
 
-		Route::get('clients', 'ClientController@get');
-		Route::get('clients/{id}', 'ClientController@getById');
-		Route::post('clients', 'ClientController@create');
-		Route::patch('clients/{id}', 'ClientController@update');
-		Route::delete('clients/{id}', 'ClientController@delete');
-
+		CrudRoute::register('clients', 'ClientController');
 
 		Route::get('projects', 'ProjectApiController@get');
 		Route::post('projects', 'ProjectApiController@create');
